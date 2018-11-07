@@ -1,5 +1,12 @@
 <h1>All Posts</h1>
 
+{{#if success_message}}
+<div class="alert alert-success">
+{{success_message}}
+</div>
+{{/if}}
+
+
 <table class="table">
   <thead>
     <tr>
@@ -8,6 +15,7 @@
       <th scope="col">Title</th>
       <th scope="col">Status</th>
       <th scope="col">Allow Comments</th>
+      <th scope="col">Date</th>
     </tr>
   </thead>
   <tbody>
@@ -18,6 +26,7 @@
       <td>{{title}}</td>
       <td>{{status}}</td>
       <td>{{allowComments}}</td>
+      <td>{{date}}</td>
       <td><a href="/admin/posts/edit/{{_id}}" class="btn btn-info">Edit</a></td>
       <td>
           <form action="/admin/posts/{{_id}}?_method=DELETE" method="post">

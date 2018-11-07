@@ -3,6 +3,8 @@ const router= express.Router();
 const {Post}= require('../../models/Post');
 const fs= require('fs');
 const path= require('path');
+const flash= require('connect-flash');
+const moment= require('moment');
 
 const uploadDir= path.join(__dirname, '../../public/uploads/');
       
@@ -40,7 +42,8 @@ router.get('/edit/:id',(req,res)=> {
             title:post.title,
             description:post.description,
             status:post.status,
-            allowComments:post.allowComments
+            allowComments:post.allowComments,
+            file:post.file
         });
     })
 })
@@ -50,7 +53,7 @@ router.post('/create',(req,res)=> {
       
     const file= req.files.file;
     const filename= Date.now()+'-'+file.name;
-    console.log(filename);
+    console.log(file);
     
     file.mv('./public/uploads/'+ filename, (err)=> {
         if(err){
@@ -69,10 +72,13 @@ router.post('/create',(req,res)=> {
         status:req.body.status,
         description:req.body.description,
         allowComments:allowComments,
-        file:filename
+        file:filename,
+        date:moment().format('MMMM Do YYYY, h:mm:ss a')
     })
          
     post.save().then(()=> {
+        
+        req.flash('success_message',`Post ${post.title} created successfully`);
         res.redirect('/admin/posts/all_posts');
     },(e)=> {
         res.send(e);
@@ -82,6 +88,15 @@ router.post('/create',(req,res)=> {
 
 
 router.put('/edit/:id',(req,res)=> {
+    
+    const file= req.files.file;
+    const filename= Date.now()+'-'+file.name;
+    console.log(filename);
+    
+    file.mv('./public/uploads/'+ filename, (err)=> {
+        if(err){
+            throw err;}
+    });
     
     let allowComments;
     if(req.body.allowComments){
@@ -95,8 +110,11 @@ router.put('/edit/:id',(req,res)=> {
          post.status= req.body.status;
          post.description= req.body.description;
          post.allowComments= allowComments;
+         post.file= filename;
+     
          
          post.save().then(()=>{
+             req.flash('success_message',`Post ${post.title} updated successfully`);
              res.redirect('/admin/posts/all_posts');
          })
              
@@ -115,7 +133,8 @@ router.delete('/:id',(req,res)=> {
         fs.unlink(uploadDir+ post.file, (err) => {
           if (err) throw err;
         });
-   
+        
+        req.flash('success_message',`Post ${post.title} deleted successfully`);
         res.redirect('/admin/posts/all_posts');
     })
 })

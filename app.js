@@ -6,7 +6,8 @@ const path= require('path');
 const {select}= require('./helpers/handlebars-helpers');
 const methodOverride= require('method-override');
 const upload= require('express-fileupload');
-
+const session= require('express-session');
+const flash= require('connect-flash');
 
 const app= express();
 
@@ -29,6 +30,23 @@ app.set('view engine', 'handlebars');
 
 //method-override
 app.use(methodOverride('_method'));
+
+
+//session-middleware
+app.set('trust proxy', 1) // trust first proxy
+app.use(session({
+  secret: 'deepakkumrawat8@gmail.com',
+  resave: true,
+  saveUninitialized: true,
+}))
+
+
+//flash-middleware
+app.use(flash());
+app.use((req,res,next)=> {
+    res.locals.success_message=req.flash('success_message');
+    next();
+});
 
 
 //Load Routes

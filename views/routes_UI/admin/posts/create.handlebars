@@ -4,7 +4,7 @@
   <form action="/admin/posts/create" method="post" enctype="multipart/form-data">
   <div class="form-group">
     <label for="title">Title</label>
-    <input type="text" name="title" id="title" class="form-control" placeholder="Enter Title" required>
+    <input type="text" name="title" maxlength="30" id="title" class="form-control" placeholder="Enter Title" required>
   </div>
   <div class="form-group">
     <label for="file">File Upload</label>
@@ -26,6 +26,6 @@
     <input style="margin-left:0px" type="checkbox" class="form-check-input" id="allowComments" name="allowComments">
     <label class="form-check-label" for="allowComments">Allow Comments</label>
   </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
+  <button type="submit" class="btn btn-primary">Create Post</button>
 </form>
 </div>

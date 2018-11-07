@@ -21,6 +21,9 @@ const PostSchema= new mongoose.Schema({
     file:{
         type: String,
         required: true,
+    },
+    date:{
+        type:String
     }
 })
 const Post= mongoose.model('posts', PostSchema);
