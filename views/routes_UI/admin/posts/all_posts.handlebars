@@ -1,0 +1,30 @@
+<h1>All Posts</h1>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">File</th>
+      <th scope="col">Title</th>
+      <th scope="col">Status</th>
+      <th scope="col">Allow Comments</th>
+    </tr>
+  </thead>
+  <tbody>
+      {{#each posts}}
+    <tr>
+      <td>{{_id}}</td>
+      <td><img src="/uploads/{{file}}" height="65" width="80"></td>
+      <td>{{title}}</td>
+      <td>{{status}}</td>
+      <td>{{allowComments}}</td>
+      <td><a href="/admin/posts/edit/{{_id}}" class="btn btn-info">Edit</a></td>
+      <td>
+          <form action="/admin/posts/{{_id}}?_method=DELETE" method="post">
+          <button type="submit" class="btn btn-danger" style="cursor:pointer">Delete</button>
+          </form>
+      </td>
+    </tr>
+      {{/each}}
+  </tbody>
+</table>
