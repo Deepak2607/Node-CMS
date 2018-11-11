@@ -23,7 +23,12 @@ const PostSchema= new mongoose.Schema({
         required: true,
     },
     date:{
-        type:String
+        type:String,
+        required: true
+    },
+    category:{
+        type:String,
+        required:true
     }
 })
 const Post= mongoose.model('posts', PostSchema);

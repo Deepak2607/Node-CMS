@@ -1,0 +1,48 @@
+<div class="container">
+    
+  <div class="row">   
+  <div class="col-md-4">
+  <h2>Create Category</h2>
+  <form action="/admin/categories/create" method="post" enctype="multipart/form-data">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" name="name" maxlength="30" id="name" class="form-control" placeholder="Enter Name" required>
+  </div>
+  <button type="submit" style="cursor:pointer" class="btn btn-primary">Create category</button>
+  </form>
+  </div>
+    </div>
+    <br>
+    <hr>
+  <div class="row">
+  <div class="col-md-8">
+      <h2>Categories</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Name</th>
+          <th scope="col">Date</th>
+        </tr>
+      </thead>
+      <tbody>
+          {{#each categories}}
+        <tr>
+          <td>{{_id}}</td>
+          <td>{{name}}</td>
+          <td>{{date}}</td>
+          <td><a href="/admin/categories/edit/{{_id}}" class="btn btn-info">Edit</a></td>
+            <td>
+                <form action="/admin/categories/{{_id}}?_method=DELETE" method="post" enctype="multipart/form-data">
+                <button type="submit" class="btn btn-danger" style="cursor:pointer">Delete</button>
+                </form>
+            </td>
+        </tr> 
+          {{/each}}
+      </tbody>
+    </table>
+  </div>      
+  </div>
+    
+</div>
+

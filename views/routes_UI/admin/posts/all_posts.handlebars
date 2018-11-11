@@ -10,10 +10,11 @@
 <table class="table">
   <thead>
     <tr>
-      <th scope="col">ID</th>
+<!--      <th scope="col">ID</th>-->
       <th scope="col">File</th>
       <th scope="col">Title</th>
       <th scope="col">Status</th>
+      <th scope="col">Category</th>
       <th scope="col">Allow Comments</th>
       <th scope="col">Date</th>
     </tr>
@@ -21,10 +22,11 @@
   <tbody>
       {{#each posts}}
     <tr>
-      <td>{{_id}}</td>
+<!--      <td></td>-->
       <td><img src="/uploads/{{file}}" height="65" width="80"></td>
       <td>{{title}}</td>
       <td>{{status}}</td>
+      <td>{{category}}</td>
       <td>{{allowComments}}</td>
       <td>{{date}}</td>
       <td><a href="/admin/posts/edit/{{_id}}" class="btn btn-info">Edit</a></td>

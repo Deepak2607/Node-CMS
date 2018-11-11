@@ -1,6 +1,7 @@
 const express= require('express');
 const router= express.Router();
 const {Post}= require('../../models/Post');
+const {Category}= require('../../models/Category');
 const fs= require('fs');
 const path= require('path');
 const flash= require('connect-flash');
@@ -20,7 +21,10 @@ router.get('/',(req,res)=> {
 
 
 router.get('/create',(req,res)=> {
-    res.render('routes_UI/admin/posts/create');
+    
+    Category.find().then((categories)=> {
+        res.render('routes_UI/admin/posts/create', {categories});
+    })
 })
 
 
@@ -37,14 +41,11 @@ router.get('/all_posts',(req,res)=> {
 router.get('/edit/:id',(req,res)=> {
     
     Post.findById(req.params.id).then((post)=> {
-        res.render('routes_UI/admin/posts/edit',{
-            id:req.params.id,
-            title:post.title,
-            description:post.description,
-            status:post.status,
-            allowComments:post.allowComments,
-            file:post.file
-        });
+        
+        Category.find().then((categories)=> {
+        res.render('routes_UI/admin/posts/edit',{post, categories});
+    })
+        
     })
 })
 
@@ -70,6 +71,7 @@ router.post('/create',(req,res)=> {
     const post= new Post({
         title:req.body.title,
         status:req.body.status,
+        category:req.body.category,
         description:req.body.description,
         allowComments:allowComments,
         file:filename,
@@ -108,6 +110,7 @@ router.put('/edit/:id',(req,res)=> {
         
          post.title= req.body.title;
          post.status= req.body.status;
+         post.category= req.body.category;
          post.description= req.body.description;
          post.allowComments= allowComments;
          post.file= filename;

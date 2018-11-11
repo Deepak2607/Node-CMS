@@ -1,18 +1,28 @@
 <h1>Edit Post</h1>
 
 <div class="container">
-  <form action="/admin/posts/edit/{{id}}?_method=PUT" method="post" enctype="multipart/form-data">
+  <form action="/admin/posts/edit/{{post._id}}?_method=PUT" method="post" enctype="multipart/form-data">
   <div class="form-group">
     <label for="title">Title</label>
-    <input type="text" name="title" id="title" class="form-control" placeholder="Enter Title" required  value={{title}}>
+    <input type="text" name="title" id="title" class="form-control" placeholder="Enter Title" required  value={{post.title}}>
   </div>
   <div class="form-group">
     <label for="file">File Upload</label>
     <input type="file" name="file" id="file" class="form-control" required>
   </div>
+      
+  <div class="form-group">
+    <label for="category">Category</label>
+    <select name="category" id="category" class="form-control" required>
+        {{#each categories}}
+        <option value={{name}}>{{name}}</option>
+        {{/each}}
+    </select>
+  </div>
+      
   <div class="form-group">
     <label for="status">Status</label>
-    <select name="status" id="status" class="form-control" value={{status}} required>
+    <select required name="status" id="status" class="form-control" value={{post.status}}>
         <option value="public">Public</option>
         <option value="private">Private</option>
         <option value="draft">Draft</option>
@@ -20,13 +30,13 @@
   </div> 
   <div class="form-group">
     <label for="description">Description</label>
-    <textarea class="form-control" name="description" id="description" rows="4" placeholder="Enter Description" required>{{description}}</textarea>
+    <textarea class="form-control" name="description" id="description" rows="4" placeholder="Enter Description" required>{{post.description}}</textarea>
   </div>
   
-      {{#select allowComments}} {{/select}}
+      {{#select post.allowComments}} {{/select}}
       
   <div class="form-check">
-    <input style="margin-left:0px" type="checkbox" {{#if allowComments}} checked='checked' {{/if}} class="form-check-input" id="allowComments" name="allowComments">
+    <input style="margin-left:0px" type="checkbox" {{#if post.allowComments}} checked='checked' {{/if}} class="form-check-input" id="allowComments" name="allowComments">
     <label class="form-check-label" for="allowComments">Allow Comments</label>
   </div>
   <button type="submit" class="btn btn-primary">Update Post</button>

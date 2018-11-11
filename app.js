@@ -1,13 +1,13 @@
 const express= require('express');
 const mongoose= require('mongoose');
+const upload= require('express-fileupload');
 const bodyParser= require('body-parser');
 const exphbs= require('express-handlebars');
 const path= require('path');
-const {select}= require('./helpers/handlebars-helpers');
 const methodOverride= require('method-override');
-const upload= require('express-fileupload');
 const session= require('express-session');
 const flash= require('connect-flash');
+const {select}= require('./helpers/handlebars-helpers');
 
 const app= express();
 
@@ -53,12 +53,13 @@ app.use((req,res,next)=> {
 const home= require('./routes/home/index');
 const admin= require('./routes/admin/index');
 const posts= require('./routes/admin/posts');
-
+const categories= require('./routes/admin/categories');
 
 //Use routes
 app.use('/',home);
 app.use('/admin',admin);
 app.use('/admin/posts',posts);
+app.use('/admin/categories',categories);
 
 
 
