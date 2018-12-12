@@ -10,8 +10,10 @@ const flash= require('connect-flash');
 const {select}= require('./helpers/handlebars-helpers');
 
 const app= express();
+const port= process.env.PORT || 8000;
 
-mongoose.connect('mongodb://localhost:27017/cms',{ useNewUrlParser: true });
+mongoose.Promise= global.Promise;
+mongoose.connect("mongodb://cms-database:Deepak_2607@ds137650.mlab.com:37650/cms-database" || 'mongodb://localhost:27017/cms',{ useNewUrlParser: true });
 app.use(express.static(path.join(__dirname, 'public')));
 
 //upload-middleware
@@ -63,7 +65,6 @@ app.use('/admin/categories',categories);
 
 
 
-
-app.listen(8000,()=> {
-    console.log('Server started at port 8000');
+app.listen(port,()=> {
+    console.log(`Started on port ${port}`);
 })
