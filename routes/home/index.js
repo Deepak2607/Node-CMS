@@ -66,7 +66,7 @@ router.post('/register',(req,res)=> {
     if(req.body.password!==req.body.passwordConfirm){
         errors.push({message:'Passwords do not match'});
     }
-
+    
     
     if(errors.length>0){
         res.render('routes_UI/home/register',{errors});
@@ -99,6 +99,30 @@ router.post('/register',(req,res)=> {
 })
 
 
+
+router.post('/login',(req,res)=> {
+    
+    User.findOne({email:req.body.email}).then((user)=> {
+        
+        if(user){
+            bcrypt.compare(req.body.password, user.password, function(err, result) {
+                    if(result){
+                        req.flash('success_message',`Login successful`);
+                        res.redirect('/');
+                    }
+                    else{
+                        req.flash('success_message',`Password is incorrect`);
+                        res.redirect('/login');
+                    }
+            });
+        }
+        else{
+            req.flash('success_message',`Email not exists`);
+            res.redirect('/login');
+        }
+        
+})
+})
 
 
 

@@ -15,7 +15,7 @@ mongoose.connect('mongodb://localhost:27017/cms',{ useNewUrlParser: true });
 app.use(express.static(path.join(__dirname, 'public')));
 
 //upload-middleware
-app.use(upload()); 
+app.use(upload());                              
 
 
 //body-parser

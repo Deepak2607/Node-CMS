@@ -44,8 +44,7 @@ router.get('/edit/:id',(req,res)=> {
         
         Category.find().then((categories)=> {
         res.render('routes_UI/admin/posts/edit',{post, categories});
-    })
-        
+    }) 
     })
 })
 
@@ -105,7 +104,7 @@ router.put('/edit/:id',(req,res)=> {
         allowComments=true;}
     else{
         allowComments=false;}
-    
+     
      Post.findById(req.params.id).then((post)=> {
         
          post.title= req.body.title;
@@ -141,16 +140,6 @@ router.delete('/:id',(req,res)=> {
         res.redirect('/admin/posts/all_posts');
     })
 })
-
-
-
-
-
-
-
-
-
-
 
 
 
