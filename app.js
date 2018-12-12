@@ -13,7 +13,7 @@ const app= express();
 const port= process.env.PORT || 8000;
 
 mongoose.Promise= global.Promise;
-mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost:27017/cms',{ useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/cms',{ useNewUrlParser: true });
 app.use(express.static(path.join(__dirname, 'public')));
 
 //upload-middleware
