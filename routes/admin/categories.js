@@ -8,24 +8,35 @@ router.all('/*',(req,res,next)=> {
     next();
 })
 
-router.get('/',(req,res)=> {
+
+const isAuthenticated= (req,res,next)=> {
+    if(req.isAuthenticated()){  
+        next();
+    }else{
+        req.flash('error',`You are not logged in.`);
+        res.redirect('/login');
+    }
+}
+
+
+router.get('/',isAuthenticated,(req,res)=> {
     
     Category.find().then((categories)=> {
-        res.render('routes_UI/admin/categories/index',{categories});
+        res.render('routes_UI/admin/categories/index',{categories, user:req.user});
     })
 })
 
 
-router.get('/edit/:id',(req,res)=> {
+router.get('/edit/:id',isAuthenticated,(req,res)=> {
     
     Category.findById(req.params.id).then((category)=> {
-         res.render('routes_UI/admin/categories/edit',{category});
+         res.render('routes_UI/admin/categories/edit',{category, user:req.user});
     })
 })
 
 
 
-router.post('/create',(req,res)=> {
+router.post('/create',isAuthenticated,(req,res)=> {
     
     const category= new Category({
         name:req.body.name,
@@ -38,7 +49,7 @@ router.post('/create',(req,res)=> {
 })
 
 
-router.put('/edit/:id',(req,res)=> {
+router.put('/edit/:id',isAuthenticated,(req,res)=> {
     
    Category.findById(req.params.id).then((category)=> {
        category.name= req.body.name;
@@ -50,7 +61,7 @@ router.put('/edit/:id',(req,res)=> {
 })
 
 
-router.delete('/:id',(req,res)=> {
+router.delete('/:id',isAuthenticated,(req,res)=> {
     
     Category.findById(req.params.id).then((category)=> {
         

@@ -3,15 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
   },
-  "engines":{
-      "node": "10.2.1"
+  "engines": {
+    "node": "10.2.1"
   },
-    
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -24,6 +22,8 @@
     "express-session": "^1.15.6",
     "method-override": "^3.0.0",
     "moment": "^2.22.2",
-    "mongoose": "^5.3.9"
+    "mongoose": "^5.3.9",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0"
   }
 }

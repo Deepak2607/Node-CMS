@@ -4,6 +4,8 @@ const {Post}= require('../../models/Post');
 const {Category}= require('../../models/Category');
 const {User}= require('../../models/User');
 const bcrypt = require('bcryptjs');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 
 
 router.all('/*',(req,res,next)=> {
@@ -11,27 +13,28 @@ router.all('/*',(req,res,next)=> {
     next();
 })
 
+const isNotAuthenticated= (req,res,next)=> {
+    if(! req.isAuthenticated()){
+        next();
+    }else{
+        req.flash('error',`You need to logout first.`);
+        res.redirect('/admin');
+    }
+}
+
 
 router.get('/',(req,res)=> {
     
     Post.find().then((posts)=> {
         
         Category.find().then((categories)=> {
-            res.render('routes_UI/home/index',{posts, categories});
+            res.render('routes_UI/home/all_posts',{posts, categories});
         })
     })   
 })
 
 router.get('/about',(req,res)=> {
     res.render('routes_UI/home/about');
-})
-
-router.get('/login',(req,res)=> {
-    res.render('routes_UI/home/login');
-})
-
-router.get('/register',(req,res)=> {
-    res.render('routes_UI/home/register');
 })
 
 
@@ -43,6 +46,16 @@ router.get('/post/:id',(req,res)=> {
             res.render('routes_UI/home/post',{post, categories});
         })
     })
+})
+
+
+router.get('/login',isNotAuthenticated, (req,res)=> {
+
+    res.render('routes_UI/home/login');
+})
+
+router.get('/register',isNotAuthenticated, (req,res)=> {
+    res.render('routes_UI/home/register');
 })
 
 
@@ -99,31 +112,81 @@ router.post('/register',(req,res)=> {
 })
 
 
-
-router.post('/login',(req,res)=> {
+passport.use(new LocalStrategy({usernameField: 'email'},
+  (email, password, done)=> {
     
-    User.findOne({email:req.body.email}).then((user)=> {
+    User.findOne({email:email}).then((user)=> {
         
-        if(user){
-            bcrypt.compare(req.body.password, user.password, function(err, result) {
-                    if(result){
-                        req.flash('success_message',`Login successful`);
-                        res.redirect('/');
-                    }
-                    else{
-                        req.flash('success_message',`Password is incorrect`);
-                        res.redirect('/login');
-                    }
-            });
-        }
-        else{
-            req.flash('success_message',`Email not exists`);
-            res.redirect('/login');
-        }
+      if (!user) {
+        return done(null, false);
+      }
         
-})
-})
+        bcrypt.compare(password, user.password,(err, matched)=> {
+            
+                if(matched){
+                    return done(null, user);
+                }
+                else{
+                    return done(null, false);
+                }
+        });
+    })
+   }
+));
+
+
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    done(err, user);
+  });
+});
+
+
+
+router.post('/login',
+  passport.authenticate('local'
+                        , {successRedirect: '/admin',
+                          failureRedirect: '/login',
+                          failureFlash: 'Invalid username or password.',
+                          successFlash: 'Welcome!'}
+                       ));
+
+
+
+router.get('/logout',(req, res)=>{
+  req.logout();
+  res.redirect('/login');
+});
 
 
 
 module.exports= router;
+
+
+
+//router.post('/login',(req,res)=> {
+//    
+//    User.findOne({email:req.body.email}).then((user)=> {
+//        
+//        if(user){
+//            bcrypt.compare(req.body.password, user.password, function(err, result) {
+//                    if(result){
+//                        req.flash('success_message',`Login successful`);
+//                        res.redirect('/admin');
+//                    }
+//                    else{
+//                        req.flash('success_message',`Password is incorrect`);
+//                        res.redirect('/login');
+//                    }
+//            });
+//        }
+//        else{
+//            req.flash('success_message',`Email not exists`);
+//            res.redirect('/login');
+//        }
+//        
+//})
+//})

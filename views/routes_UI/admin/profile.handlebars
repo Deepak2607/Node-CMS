@@ -1,0 +1,21 @@
+{{#if success}}
+<br>
+<div class="alert alert-success">
+{{success}}
+</div>
+{{/if}}
+
+{{#if error}}
+<br>
+<div class="alert alert-danger">
+{{error}}
+</div>
+{{/if}}
+
+<div class="row">
+<div class="col-12">
+<h3>Hello {{user.firstName}}!</h3><br>
+<p style="font-size:20px">Name: {{user.firstName}} {{user.lastName}}</p>
+<p style="font-size:20px">Email: {{user.email}}</p>
+</div>
+</div>

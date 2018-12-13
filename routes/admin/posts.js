@@ -14,43 +14,47 @@ router.all('/*',(req,res,next)=> {
     next();
 })
 
+const isAuthenticated= (req,res,next)=> {
+    if(req.isAuthenticated()){  
+        next();
+    }else{
+        req.flash('error',`You are not logged in.`);
+        res.redirect('/login');
+    }
+}
 
-router.get('/',(req,res)=> {
-    res.send('it works');
-})
 
-
-router.get('/create',(req,res)=> {
+router.get('/create',isAuthenticated,(req,res)=> {
     
     Category.find().then((categories)=> {
-        res.render('routes_UI/admin/posts/create', {categories});
+        res.render('routes_UI/admin/posts/create', {categories, user:req.user});
     })
 })
 
 
-router.get('/all_posts',(req,res)=> {
+router.get('/my_posts',isAuthenticated,(req,res)=> {
     
-    Post.find().then((posts)=> {
-        res.render('routes_UI/admin/posts/all_posts' ,{posts});
+    Post.find({userEmail:req.user.email}).then((posts)=> {
+        res.render('routes_UI/admin/posts/my_posts' ,{posts, user:req.user});
     },(e)=> {
         res.send(e);
     })
 })
 
 
-router.get('/edit/:id',(req,res)=> {
+router.get('/edit/:id',isAuthenticated,(req,res)=> {
     
     Post.findById(req.params.id).then((post)=> {
         
         Category.find().then((categories)=> {
-        res.render('routes_UI/admin/posts/edit',{post, categories});
+        res.render('routes_UI/admin/posts/edit',{post, categories, user:req.user});
     }) 
     })
 })
 
 
-router.post('/create',(req,res)=> {
-      
+router.post('/create',isAuthenticated,(req,res)=> {
+
     const file= req.files.file;
     const filename= Date.now()+'-'+file.name;
     console.log(file);
@@ -74,13 +78,15 @@ router.post('/create',(req,res)=> {
         description:req.body.description,
         allowComments:allowComments,
         file:filename,
-        date:moment().format('MMMM Do YYYY, h:mm:ss a')
+        date:moment().format('MMMM Do YYYY, h:mm:ss a'),
+        userEmail:req.user.email
+      
     })
          
     post.save().then(()=> {
         
         req.flash('success_message',`Post ${post.title} created successfully`);
-        res.redirect('/admin/posts/all_posts');
+        res.redirect('/admin/posts/my_posts');
     },(e)=> {
         res.send(e);
     })
@@ -88,7 +94,7 @@ router.post('/create',(req,res)=> {
 
 
 
-router.put('/edit/:id',(req,res)=> {
+router.put('/edit/:id',isAuthenticated,(req,res)=> {
     
     const file= req.files.file;
     const filename= Date.now()+'-'+file.name;
@@ -113,11 +119,12 @@ router.put('/edit/:id',(req,res)=> {
          post.description= req.body.description;
          post.allowComments= allowComments;
          post.file= filename;
+         post.userEmail= req.user.email;
      
          
          post.save().then(()=>{
              req.flash('success_message',`Post ${post.title} updated successfully`);
-             res.redirect('/admin/posts/all_posts');
+             res.redirect('/admin/posts/my_posts');
          })
              
     })
@@ -126,7 +133,7 @@ router.put('/edit/:id',(req,res)=> {
 
 
 
-router.delete('/:id',(req,res)=> {
+router.delete('/:id',isAuthenticated,(req,res)=> {
     
     Post.findById(req.params.id).then((post)=> {
         
@@ -137,7 +144,7 @@ router.delete('/:id',(req,res)=> {
         });
         
         req.flash('success_message',`Post ${post.title} deleted successfully`);
-        res.redirect('/admin/posts/all_posts');
+        res.redirect('/admin/posts/my_posts');
     })
 })
 

@@ -7,13 +7,18 @@ router.all('/*',(req,res,next)=> {
     next();
 })
 
-router.get('/',(req,res)=> {
-    res.render('routes_UI/admin/index',{title:'Index'});
-})
+const isAuthenticated= (req,res,next)=> {
+    if(req.isAuthenticated()){
+        next();
+    }else{
+        req.flash('error',`You are not logged in.`);
+        res.redirect('/login');
+    }
+}
 
-//router.get('/dashboard',(req,res)=> {
-//    res.render('routes_UI/admin/dashboard', {title:'Dashboard'});
-//})
+router.get('/',isAuthenticated, (req,res)=> {
+    res.render('routes_UI/admin/profile',{user:req.user});
+})
 
 
 module.exports= router;

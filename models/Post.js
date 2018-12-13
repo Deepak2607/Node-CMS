@@ -29,6 +29,9 @@ const PostSchema= new mongoose.Schema({
     category:{
         type:String,
         required:true
+    },
+    userEmail:{
+        type:String,
     }
 })
 const Post= mongoose.model('posts', PostSchema);

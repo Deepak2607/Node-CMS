@@ -7,7 +7,6 @@ module.exports={
         else{
             console.log('unchecked');
         }
-    }
-    
+    } 
     
 }
