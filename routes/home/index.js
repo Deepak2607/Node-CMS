@@ -22,19 +22,18 @@ const isNotAuthenticated= (req,res,next)=> {
     }
 }
 
-
 router.get('/',(req,res)=> {
     
     Post.find().then((posts)=> {
         
         Category.find().then((categories)=> {
-            res.render('routes_UI/home/all_posts',{posts, categories});
+            res.render('routes_UI/home/all_posts',{posts, categories, user:req.user});
         })
     })   
 })
 
 router.get('/about',(req,res)=> {
-    res.render('routes_UI/home/about');
+    res.render('routes_UI/home/about',{user:req.user});
 })
 
 
@@ -43,7 +42,8 @@ router.get('/post/:id',(req,res)=> {
     Post.findById(req.params.id).then((post)=> {
         
         Category.find().then((categories)=> {
-            res.render('routes_UI/home/post',{post, categories});
+            console.log(req.user);
+            res.render('routes_UI/home/post',{post, categories, user:req.user});
         })
     })
 })
