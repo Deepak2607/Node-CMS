@@ -34,7 +34,7 @@ router.get('/create',isAuthenticated,(req,res)=> {
 
 router.get('/my_posts',isAuthenticated,(req,res)=> {
     
-    Post.find({userEmail:req.user.email}).then((posts)=> {
+    Post.find({postedBy:req.user}).then((posts)=> {
         res.render('routes_UI/admin/posts/my_posts' ,{posts, user:req.user});
     },(e)=> {
         res.send(e);
@@ -79,10 +79,10 @@ router.post('/create',isAuthenticated,(req,res)=> {
         allowComments:allowComments,
         file:filename,
         date:moment().format('MMMM Do YYYY, h:mm:ss a'),
-        userEmail:req.user.email
+        postedBy:req.user
       
     })
-         
+      
     post.save().then(()=> {
         
         req.flash('success_message',`Post ${post.title} created successfully`);
@@ -119,7 +119,7 @@ router.put('/edit/:id',isAuthenticated,(req,res)=> {
          post.description= req.body.description;
          post.allowComments= allowComments;
          post.file= filename;
-         post.userEmail= req.user.email;
+         post.postedBy= req.user;
      
          
          post.save().then(()=>{

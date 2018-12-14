@@ -1,4 +1,5 @@
 const mongoose= require('mongoose');
+const Schema = mongoose.Schema;
 
 const PostSchema= new mongoose.Schema({
     
@@ -30,10 +31,15 @@ const PostSchema= new mongoose.Schema({
         type:String,
         required:true
     },
-    userEmail:{
-        type:String,
-    }
-})
+   postedBy:{
+        type: Object,
+        required: true
+    },
+    comments:[{
+        type: Object,
+        required: true
+    }]
+}, {usePushEach: true})
 const Post= mongoose.model('posts', PostSchema);
 
 module.exports={Post};

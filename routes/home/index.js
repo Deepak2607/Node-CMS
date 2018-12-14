@@ -3,6 +3,7 @@ const router= express.Router();
 const {Post}= require('../../models/Post');
 const {Category}= require('../../models/Category');
 const {User}= require('../../models/User');
+const {Comment}= require('../../models/Comment');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
@@ -22,6 +23,15 @@ const isNotAuthenticated= (req,res,next)=> {
     }
 }
 
+const isAuthenticated= (req,res,next)=> {
+    if(req.isAuthenticated()){
+        next();
+    }else{
+        req.flash('error',`You need to login first.`);
+        res.redirect('/login');
+    }
+}
+
 router.get('/',(req,res)=> {
     
     Post.find().then((posts)=> {
@@ -37,16 +47,51 @@ router.get('/about',(req,res)=> {
 })
 
 
+//router.get('/post/:id',(req,res)=> {
+//    
+//    Post.findById(req.params.id).then((post)=> {
+//        
+//        Comment.find({postId:req.params.id}).then((comments)=> {
+//            
+//            Category.find().then((categories)=> {
+//            res.render('routes_UI/home/post',{post, categories, comments, user:req.user});
+//            })
+//        })
+//    })
+//})
+
+
 router.get('/post/:id',(req,res)=> {
     
-    Post.findById(req.params.id).then((post)=> {
-        
-        Category.find().then((categories)=> {
-            console.log(req.user);
+    Post.findById(req.params.id).populate('comments').then((post)=> {
+           
+            Category.find().then((categories)=> {
             res.render('routes_UI/home/post',{post, categories, user:req.user});
-        })
+            })
     })
 })
+
+router.post('/post/:id',isAuthenticated,(req,res)=> {
+    
+   Post.findById(req.params.id).then((post)=> {
+        
+          const newComment= new Comment({
+            commentedBy:req.user,
+            comment:req.body.comment,
+    //        postId: req.params.id
+        })
+    
+        post.comments.push(newComment);
+        
+        post.save().then(()=> {
+            
+            newComment.save().then(()=> {
+                res.redirect(`/post/${req.params.id}`);
+            })
+        })
+    })   
+})
+
 
 
 router.get('/login',isNotAuthenticated, (req,res)=> {
